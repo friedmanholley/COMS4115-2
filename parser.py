@@ -7,15 +7,13 @@ class ASTNode:
     def add_child(self, child_node):
         self.children.append(child_node)
 
-    def __repr__(self, level=0):
-        indent = '  ' * level  # Add indentation based on recursion depth
+    def __repr__(self):
+        # Handle indentation for child nodes to avoid recursion errors
         if self.children:
-            # Recurse with an increasing depth (level)
-            children_repr = ', '.join([repr(child, level + 1) for child in self.children])
-            return f"{indent}{self.type}({self.value}): [{children_repr}]"
+            children_repr = ', '.join([repr(child) for child in self.children])
+            return f"{self.type}({self.value}): [{children_repr}]"
         else:
-            return f"{indent}{self.type}({self.value})"
-
+            return f"{self.type}({self.value})"
 
 
 class Parser:
