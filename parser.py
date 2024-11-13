@@ -122,19 +122,17 @@ class Parser:
                 break  # Break if any unexpected token is found
         return content_node
 
-    def parse_grid_content(self):
-        """Parse grid content which can be a combination of expressions."""
-        content_node = ASTNode('GridContent')
-        while self.position < len(self.tokens):
-            current = self.current_token()
-            if current and current[0] in ['Keyword', 'Identifier']:
-                content_node.add_child(self.parse_expression())
-                if self.current_token() and self.current_token()[0] == 'SpecialSymbol' and self.current_token()[1] == ',':
-                    self.eat('SpecialSymbol')  # eat ','
-                else:
-                    break  # Stop if no more commas or invalid tokens
-            elif current and current[0] == 'SpecialSymbol' and current[1] == ')':
-                break  # Stop if we've encountered the closing parenthesis for the grid
-            else:
-                break  # Break if any unexpected token is found
-        return content_node
+    def parse_grid_statement(self):
+        """Parse a 'grid' statement."""
+        self.eat('Keyword')  # eat 'grid'
+        self.eat('SpecialSymbol')  # eat '('
+        rows = self.parse_number()  # Parse number of rows
+        self.eat('SpecialSymbol')  # eat ','
+        cols = self.parse_number()  # Parse number of columns
+        self.eat('SpecialSymbol')  # eat ','
+        grid_content = self.parse_grid_content()  # Parse the content inside the grid
+        self.eat('SpecialSymbol')  # eat ')'
+        
+        node = ASTNode('GridStatement', value=(rows, cols))
+        node.add_child(grid_content)  # Add the parsed grid content as a child node
+        return node
