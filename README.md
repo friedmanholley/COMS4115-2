@@ -24,7 +24,7 @@
 
 ```
 Program         -> Statement*
-Statement       -> DrawStatement | WriteStatement | GridStatement | AssignmentStatement
+Statement       -> DrawStatement | WriteStatement | GridStatement
 DrawStatement   -> 'draw' '(' Expression ')'
 WriteStatement  -> 'write' '(' Expression ')'
 GridStatement   -> 'grid' '(' Number ',' Number ',' GridContent ')'
@@ -32,7 +32,6 @@ GridContent     -> (Expression (',' Expression)*) | (GridStatement (',' GridStat
 Expression      -> Image | Expression '+' Image | Expression '/' Image | Number '*' Image
 Image           -> 'draw' '(' Identifier ')'
                 | 'write' '(' Identifier ')'
-                | Identifier
 Identifier      -> 'dog' | 'cat' | 'tree' | 'sun' | 'house' | 'bird'
 Number          -> [0-9]+
 ```
