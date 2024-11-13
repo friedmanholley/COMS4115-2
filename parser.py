@@ -53,10 +53,10 @@ class Parser:
                 return self.parse_draw_statement()
             elif keyword == 'grid':
                 print("Parsing grid statement...")  # Debugging print statement
-                return self.parse_grid_statement()  # This is now correctly defined
+                return self.parse_grid_statement()
             elif keyword == 'write':  # Handle 'write' keyword
                 print("Parsing write statement...")  # Debugging print statement
-                return self.parse_write_statement()  # Parse the write statement
+                return self.parse_write_statement()
             else:
                 raise SyntaxError(f"Unknown statement {keyword}")
         
@@ -67,7 +67,7 @@ class Parser:
         
         elif current[0] == 'SpecialSymbol' and current[1] == ';':
             # Skip over semicolons as statement terminators
-            self.eat('SpecialSymbol')  # eat ';'
+            self.eat('SpecialSymbol')  # Eat ';'
             return None  # No statement to parse
         else:
             raise SyntaxError(f"Unexpected token {current}")
@@ -135,8 +135,6 @@ class Parser:
                 break
     
         return left
-
-
 
 
     def parse_factor(self):
