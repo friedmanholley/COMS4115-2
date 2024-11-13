@@ -1,15 +1,3 @@
-class ASTNode:
-    def __init__(self, type_, value=None):
-        self.type = type_
-        self.value = value
-        self.children = []
-
-    def add_child(self, child_node):
-        self.children.append(child_node)
-
-    def __repr__(self):
-        return f"ASTNode({self.type}, {self.value})"
-
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -59,6 +47,7 @@ class Parser:
         expression = self.parse_expression()  # Parse the expression
         self.eat('SpecialSymbol')  # eat ')'
         
+        print(f"Expression parsed: {expression}")  # Debugging print statement
         node = ASTNode('DrawStatement')
         node.add_child(expression)  # Add the parsed expression as a child of the DrawStatement node
         
@@ -66,22 +55,27 @@ class Parser:
         return node
 
     def parse_expression(self):
-        left = self.parse_image()
+        print("Inside parse_expression()")  # Debugging print statement
+        left = self.parse_image()  # Parse the first image (e.g., 'sun')
         while self.current_token() and self.current_token()[0] == 'Operator':
-            operator = self.current_token()[1]
-            self.eat('Operator')
-            right = self.parse_image()
-            operator_node = ASTNode('Expression', value=operator)
-            operator_node.add_child(left)
-            operator_node.add_child(right)
-            left = operator_node  # Update left to the new operator node
+            operator = self.current_token()[1]  # Get the operator ('+')
+            self.eat('Operator')  # Eat the operator token
+            right = self.parse_image()  # Parse the right-hand side image (e.g., 'dog')
+            
+            operator_node = ASTNode('Expression', value=operator)  # Create a new expression node for the operator
+            operator_node.add_child(left)  # Add the left operand (sun)
+            operator_node.add_child(right)  # Add the right operand (dog)
+            
+            left = operator_node  # Update left to the new operator node (for the next operator, if any)
+        
+        print(f"Expression parsed as: {left}")  # Debugging print statement
         return left
 
     def parse_image(self):
         current = self.current_token()
         if current[0] == 'Identifier':
             identifier = self.current_token()[1]
-            self.eat('Identifier')
+            self.eat('Identifier')  # Eat the identifier (sun, dog)
             return ASTNode('Identifier', value=identifier)
         else:
             raise SyntaxError(f"Unexpected token in image: {current}")
