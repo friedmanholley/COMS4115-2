@@ -1,3 +1,7 @@
+### **Authors**
+- Gabrielle Holley 'gf2501'
+- William Culver 'wrc2120'
+
 ### **Context-Free Grammar (CFG)**
 
 #### **Non-Terminals:**
