@@ -2,6 +2,9 @@
 - Gabrielle Holley: `gf2501`
 - William Culver: `wrc2120`
 
+### **Video**
+[Link to Video in Google Drive](https://drive.google.com/file/d/1YmILulBoxk2YLLDbePkGMrNR2byiX5m7/view?usp=sharing)
+
 ### **Context-Free Grammar (CFG)**
 
 #### **Non-Terminals:**
