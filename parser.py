@@ -8,12 +8,12 @@ class ASTNode:
         self.children.append(child_node)
 
     def __repr__(self):
-        # If the node has children, recursively print them
+        # Simplified output for testing
         if self.children:
-            children_repr = "\n    ".join([repr(child) for child in self.children])
-            return f"ASTNode({self.type}, {self.value})\n    {children_repr}"
+            return f"{self.type}({self.value}): [{', '.join([repr(child) for child in self.children])}]"
         else:
-            return f"ASTNode({self.type}, {self.value})"
+            return f"{self.type}({self.value})"
+
 
 class Parser:
     def __init__(self, tokens):
