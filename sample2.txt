@@ -1,0 +1,5 @@
+draw(sun+dog);
+write(cat) * 3;
+grid(2,1,draw(cat),draw(dog));
+write(cat) * 3 + draw(dog);
+write(sun) / draw(dog);
