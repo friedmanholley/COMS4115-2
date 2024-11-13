@@ -3,6 +3,18 @@
 # Ensure that the script stops execution if any command fails
 set -e
 
+# Check if a .py or .txt file was passed as an argument
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <file_to_parse.py or file_to_parse.txt>"
+    exit 1
+fi
+
+# Get the file passed as an argument
+INPUT_FILE=$1
+
+# Check the file extension
+EXT="${INPUT_FILE##*.}"
+
 # Step 1: Set up a virtual environment (optional but recommended)
 echo "Setting up a virtual environment..."
 python3 -m venv venv
@@ -16,9 +28,16 @@ echo "Installing dependencies..."
 pip install --upgrade pip  # Upgrade pip to the latest version
 pip install -r requirements.txt  # Install dependencies from requirements.txt
 
-# Step 4: Run the parser
-echo "Running the parser..."
-python test.py  # Assuming 'test.py' is the main parser file
+# Step 4: Run the parser with the provided file
+echo "Running the parser on $INPUT_FILE..."
+
+if [ "$EXT" == "py" ] || [ "$EXT" == "txt" ]; then
+    # If it's a .py or .txt file, pass the file to the parser
+    python parse.py "$INPUT_FILE"
+else
+    echo "Unsupported file type. Please provide a .py or .txt file."
+    exit 1
+fi
 
 # Step 5: Deactivate the virtual environment
 echo "Deactivating the virtual environment..."
