@@ -52,6 +52,12 @@ class Parser:
                 return self.parse_write_statement()  # Parse the write statement
             else:
                 raise SyntaxError(f"Unknown statement {keyword}")
+        
+        # Handle expressions that start with '(' 
+        elif current[0] == 'SpecialSymbol' and current[1] == '(':
+            print("Parsing expression inside parentheses...")  # Debugging print statement
+            return self.parse_expression()  # Parse the expression inside the parentheses
+        
         elif current[0] == 'SpecialSymbol' and current[1] == ';':
             # Skip over semicolons as statement terminators
             self.eat('SpecialSymbol')  # eat ';'
@@ -104,21 +110,41 @@ class Parser:
 
 
     def parse_expression(self):
-        print("Inside parse_expression()")  # Debugging print statement
-        left = self.parse_image()  # Parse the first image (e.g., 'sun')
-        while self.current_token() and self.current_token()[0] == 'Operator':
-            operator = self.current_token()[1]  # Get the operator ('+')
-            self.eat('Operator')  # Eat the operator token
-            right = self.parse_image()  # Parse the right-hand side image (e.g., 'dog')
-            
-            operator_node = ASTNode('Expression', value=operator)  # Create a new expression node for the operator
-            operator_node.add_child(left)  # Add the left operand (sun)
-            operator_node.add_child(right)  # Add the right operand (dog)
-            
-            left = operator_node  # Update left to the new operator node (for the next operator, if any)
+        current = self.current_token()
         
-        print(f"Expression parsed as: {left}")  # Debugging print statement
+        # Handle parentheses
+        if current[0] == 'SpecialSymbol' and current[1] == '(':
+            self.eat('SpecialSymbol', '(')  # Eat '('
+            expr = self.parse_expression()  # Recursively parse the expression inside
+            self.eat('SpecialSymbol', ')')  # Eat ')'
+            return expr
+        
+        # Handle multiplication and division first
+        left = self.parse_factor()  # This would handle factors (numbers, images, etc.)
+        
+        while True:
+            current = self.current_token()
+            if current[0] == 'Operator' and current[1] in ('*', '/'):
+                operator = current
+                self.eat('Operator')
+                right = self.parse_factor()  # Get the right operand
+                left = ASTNode('Expression', operator[1], left, right)  # Combine the operands
+            else:
+                break
+        
+        # Now handle addition and subtraction
+        while True:
+            current = self.current_token()
+            if current[0] == 'Operator' and current[1] in ('+', '-'):
+                operator = current
+                self.eat('Operator')
+                right = self.parse_factor()  # Get the right operand
+                left = ASTNode('Expression', operator[1], left, right)  # Combine the operands
+            else:
+                break
+        
         return left
+
 
     def parse_image(self):
         current = self.current_token()
