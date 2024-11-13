@@ -133,19 +133,19 @@ This would generate word illustration of sun over top of an image of a dog.
 ```
 
 ### Error Input 1
-'''plaintext
+```plaintext
 draw();
 
 SyntaxError: Unexpected token ('SpecialSymbol', ')')
 
 Error due to specialtoken ')' being present where Identifier was expected.
-'''
+```
 
 ### Error Input 2
-'''plaintext
+```plaintext
 dog;
 
 SyntaxError: Unexpected token ('Identifier', 'dog')
 
 Error due to identifier being present without and expression to define what should be done with it; either write or draw.
-'''
+```
