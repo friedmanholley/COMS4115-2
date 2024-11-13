@@ -127,27 +127,40 @@ class Parser:
 
     def parse_factor(self):
         current = self.current_token()
-        
-        # Case 1: Handle parenthesized expressions
-        if current and current[0] == 'SpecialSymbol' and current[1] == '(':
+        if current and current[0] == 'Keyword' and current[1] == 'draw':
+            # Handle the 'draw' expression
+            self.eat('Keyword')  # Eat the 'draw' keyword
             self.eat('SpecialSymbol')  # Eat the '('
-            expr = self.parse_expression()  # Parse the inner expression
-            self.eat('SpecialSymbol')  # Eat the ')'
-            return expr
+            
+            # Parse the expression inside the parentheses
+            expr = self.parse_expression()
+            
+            self.eat('SpecialSymbol')  # Eat the closing ')'
+            
+            # Create an AST node for 'draw' and add the parsed expression as a child
+            draw_node = ASTNode('Draw')
+            draw_node.add_child(expr)
+            return draw_node
         
-        # Case 2: Handle identifiers (e.g., sun, dog, etc.)
         elif current and current[0] == 'Identifier':
+            # Handle identifier (e.g., 'sun', 'dog', etc.)
             identifier = current[1]
-            self.eat('Identifier')  # Eat the identifier
-            return identifier  # Return the identifier (or could be wrapped in an AST node)
+            self.eat('Identifier')
+            return ASTNode('Identifier', identifier)
         
-        # Case 3: Handle numbers
         elif current and current[0] == 'Number':
+            # Handle number (e.g., '3', '5', etc.)
             number = current[1]
-            self.eat('Number')  # Eat the number
-            return number  # Return the number (or could be wrapped in an AST node)
+            self.eat('Number')
+            return ASTNode('Number', number)
         
-        # Case 4: Handle invalid factor (error case)
+        elif current and current[0] == 'SpecialSymbol' and current[1] == '(':
+            # Handle expressions inside parentheses
+            self.eat('SpecialSymbol')  # Eat the '('
+            expr = self.parse_expression()  # Parse the expression
+            self.eat('SpecialSymbol')  # Eat the closing ')'
+            return expr
+    
         else:
             raise SyntaxError(f"Unexpected token {current}")
 
