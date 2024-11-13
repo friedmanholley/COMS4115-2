@@ -8,16 +8,17 @@ class ASTNode:
         self.children.append(child_node)
 
     def __repr__(self):
-        return self._repr_helper(0)
+        visited = set()  # Track visited nodes to avoid infinite recursion
+        return self._repr_helper(visited)
 
-    def _repr_helper(self, level):
-        # Increase indentation with level to avoid too deep recursion and ensure clarity
-        indentation = "  " * level
-        if self.children:
-            children_repr = ', '.join([child._repr_helper(level + 1) for child in self.children])
-            return f"{indentation}{self.type}({self.value}): [{children_repr}]"
-        else:
-            return f"{indentation}{self.type}({self.value})"
+    def _repr_helper(self, visited):
+        if id(self) in visited:
+            return f"{self.type}({self.value})"  # Avoid infinite recursion by skipping
+        visited.add(id(self))  # Mark this node as visited
+
+        # If children exist, recursively print them with indentation based on depth
+        children_repr = ', '.join([child._repr_helper(visited) for child in self.children]) if self.children else ''
+        return f"{self.type}({self.value}): [{children_repr}]"
 
 
 class Parser:
