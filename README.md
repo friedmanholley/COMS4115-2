@@ -56,56 +56,57 @@ Number          -> [0-9]+
 
 ---
 
-### **Example Input and Corresponding Derivation**:
+# Sample Input Programs
 
-#### Example 1: `draw(sun + dog);`
-```
-Statement -> DrawStatement
-DrawStatement -> 'draw' '(' Expression ')'
-Expression -> Expression '+' Image
-Expression -> 'draw' '(' Identifier ')'
-Image -> 'draw' '(' Identifier ')'
-Identifier -> 'sun'
-+ 
-Image -> 'draw' '(' Identifier ')'
-Identifier -> 'dog'
-```
+### Sample Input 1
+```plaintext
+draw(sun + dog);
 
-This would generate an image where the ASCII art of the sun and dog are placed side by side.
+DRAW_STATEMENT
+├── EXPRESSION (+)
+│   ├── IDENTIFIER (sun)
+│   └── IDENTIFIER (dog)
 
-#### Example 2: `grid(2,2, draw(sun), draw(cat), write(dog), write(tree));`
+This would generate an image with side-by-side pictures of sun (left) and dog (right). 
 ```
-Statement -> GridStatement
-GridStatement -> 'grid' '(' Number ',' Number ',' GridContent ')'
-Number -> 2
-GridContent -> Expression ',' Expression ',' Expression ',' Expression
-Expression -> 'draw' '(' Identifier ')'
-Identifier -> 'sun'
-,
-Expression -> 'draw' '(' Identifier ')'
-Identifier -> 'cat'
-,
-Expression -> 'write' '(' Identifier ')'
-Identifier -> 'dog'
-,
-Expression -> 'write' '(' Identifier ')'
-Identifier -> 'tree'
+#### Sample Input 2
+```plaintext
+write(cat) * 3;
+
+WRITE_STATEMENT
+├── EXPRESSION (*)
+│   ├── IDENTIFIER (cat)
+│   ├── *
+│   └── NUMBER (3)
+
+
+This would generate 3 word illustrations of the word cat.
 ```
 
-This would generate a 2x2 grid with the specified images (`sun`, `cat`) and word illustrations (`dog`, and `tree`).
+#### Sample Input 3
+```plaintext
+grid(2, 2, draw(cat), draw(dog), write(cat), write(dog));
 
-#### Example 3: `(3 * draw(dog)) / write(I like dogs);`
+GRID_STATEMENT
+├── GRID_CONTENT
+│   ├── DRAW_STATEMENT
+│   │   ├── IDENTIFIER (cat)
+│   └── DRAW_STATEMENT
+│       ├── IDENTIFIER (dog)
+
+This would generate a 2x2 grid with images of cat and dog on the first row, and word illustration of cat and dog on the second.
 ```
-Statement -> Expression
-Expression -> Expression '/' Image
-Expression -> Number '*' Image
-Number -> 3
-Image -> 'draw' '(' Identifier ')'
-Identifier -> 'dog'
-/
-Image -> 'write' '(' Identifier ')'
-Identifier -> 'I like dogs'
+
+#### Sample Input 3
+```plaintext
+grid(2, 2, draw(cat), draw(dog), write(cat), write(dog));
+
+GRID_STATEMENT
+├── GRID_CONTENT
+│   ├── DRAW_STATEMENT
+│   │   ├── IDENTIFIER (cat)
+│   └── DRAW_STATEMENT
+│       ├── IDENTIFIER (dog)
+
+This would generate a 2x2 grid with images of cat and dog on the first row, and word illustration of cat and dog on the second.
 ```
-
-This would generate three dogs stacked horizontally, above the words "I like dogs" illustrated in ASCII.
-
