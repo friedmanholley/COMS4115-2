@@ -92,7 +92,7 @@ Expression -> 'write' '(' Identifier ')'
 Identifier -> 'tree'
 ```
 
-This would generate a 2x2 grid with the specified images (`sun`, `cat`, `dog`, and `tree`).
+This would generate a 2x2 grid with the specified images (`sun`, `cat`) and word illustrations (`dog`, and `tree`).
 
 #### Example 3: `(3 * draw(dog)) / write(I like dogs);`
 ```
@@ -107,5 +107,5 @@ Image -> 'write' '(' Identifier ')'
 Identifier -> 'I like dogs'
 ```
 
-This would generate three dogs stacked vertically, followed by the text "I like dogs" in ASCII.
+This would generate three dogs stacked horizontally, above the words "I like dogs" illustrated in ASCII.
 
