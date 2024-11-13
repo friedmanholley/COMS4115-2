@@ -110,43 +110,6 @@ class Parser:
 
 
     def parse_expression(self):
-        current = self.current_token()
-        
-        # Handle parentheses
-        if current[0] == 'SpecialSymbol' and current[1] == '(':
-            self.eat('SpecialSymbol', '(')  # Eat '('
-            expr = self.parse_expression()  # Recursively parse the expression inside
-            self.eat('SpecialSymbol', ')')  # Eat ')'
-            return expr
-        
-        # Handle multiplication and division first
-        left = self.parse_factor()  # This would handle factors (numbers, images, etc.)
-        
-        while True:
-            current = self.current_token()
-            if current[0] == 'Operator' and current[1] in ('*', '/'):
-                operator = current
-                self.eat('Operator')
-                right = self.parse_factor()  # Get the right operand
-                left = ASTNode('Expression', operator[1], left, right)  # Combine the operands
-            else:
-                break
-        
-        # Now handle addition and subtraction
-        while True:
-            current = self.current_token()
-            if current[0] == 'Operator' and current[1] in ('+', '-'):
-                operator = current
-                self.eat('Operator')
-                right = self.parse_factor()  # Get the right operand
-                left = ASTNode('Expression', operator[1], left, right)  # Combine the operands
-            else:
-                break
-        
-        return left
-
-
-    def parse_expression(self):
         left = self.parse_factor()  # Parse the first factor
         while self.current_token() and self.current_token()[0] == 'Operator':
             operator = self.current_token()
@@ -160,6 +123,33 @@ class Parser:
             left = expr_node  # Update left for the next iteration (in case of more operators)
             
         return left
+
+
+    def parse_factor(self):
+        current = self.current_token()
+        
+        # Case 1: Handle parenthesized expressions
+        if current and current[0] == 'SpecialSymbol' and current[1] == '(':
+            self.eat('SpecialSymbol')  # Eat the '('
+            expr = self.parse_expression()  # Parse the inner expression
+            self.eat('SpecialSymbol')  # Eat the ')'
+            return expr
+        
+        # Case 2: Handle identifiers (e.g., sun, dog, etc.)
+        elif current and current[0] == 'Identifier':
+            identifier = current[1]
+            self.eat('Identifier')  # Eat the identifier
+            return identifier  # Return the identifier (or could be wrapped in an AST node)
+        
+        # Case 3: Handle numbers
+        elif current and current[0] == 'Number':
+            number = current[1]
+            self.eat('Number')  # Eat the number
+            return number  # Return the number (or could be wrapped in an AST node)
+        
+        # Case 4: Handle invalid factor (error case)
+        else:
+            raise SyntaxError(f"Unexpected token {current}")
 
 
     def parse_image(self):
