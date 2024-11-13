@@ -75,11 +75,10 @@ This would generate an image with side-by-side pictures of sun (left) and dog (r
 ```plaintext
 write(cat) * 3;
 
-WRITE_STATEMENT
-├── EXPRESSION (*)
-│   ├── IDENTIFIER (cat)
-│   ├── *
-│   └── NUMBER (3)
+EXPRESSION (*)
+├── WRITE_STATEMENT
+|    └── IDENTIFIER (cat)
+└── NUMBER (3)
 
 
 This would generate 3 word illustrations of the word cat.
@@ -90,10 +89,16 @@ This would generate 3 word illustrations of the word cat.
 grid(2, 2, draw(cat), draw(dog), write(cat), write(dog));
 
 GRID_STATEMENT
+├── NUMBER (2)
+├── NUMBER (2)
 ├── GRID_CONTENT
 │   ├── DRAW_STATEMENT
 │   │   ├── IDENTIFIER (cat)
-│   └── DRAW_STATEMENT
+│   ├── DRAW_STATEMENT
+│   │   ├── IDENTIFIER (dog)
+│   ├── WRITE_STATEMENT
+│   │   ├── IDENTIFIER (cat)
+│   └── WRITE_STATEMENT
 │       ├── IDENTIFIER (dog)
 
 This would generate a 2x2 grid with images of cat and dog on the first row, and word illustration of cat and dog on the second.
@@ -103,15 +108,12 @@ This would generate a 2x2 grid with images of cat and dog on the first row, and 
 ```plaintext
 write(cat) * 3 + draw(dog);
 
-WRITE_STATEMENT
-├── EXPRESSION (+)
-│   ├── EXPRESSION (*)
-│   │   ├── IDENTIFIER (cat)
-│   │   ├── *
-│   │   └── NUMBER (3)
-│   └── DRAW_STATEMENT
-│       ├── IDENTIFIER (dog)
-
+EXPRESSION (+)
+├── EXPRESSION (*)
+|    ├── WRITE_STATEMENT
+|    |    └── IDENTIFIER (cat)
+|    └── NUMBER (3)
+└── DRAW_STATEMENT (dog)
 
 This would generate 3 word illustration of the text cat, followed by one image of a dog.
 ```
@@ -120,13 +122,30 @@ This would generate 3 word illustration of the text cat, followed by one image o
 ```plaintext
 write(sun) / draw(dog);
 
-WRITE_STATEMENT
-├── EXPRESSION (/)
-│   ├── IDENTIFIER (sun)
-│   ├── /
-│   └── DRAW_STATEMENT
-│       ├── IDENTIFIER (dog)
+EXPRESSION (/)
+├── WRITE_STATEMENT
+│   └── IDENTIFIER (sun)
+├── DRAW_STATEMENT
+│   └── IDENTIFIER (dog)
 
 
 This would generate word illustration of sun over top of an image of a dog.
 ```
+
+### Error Input 1
+'''plaintext
+draw();
+
+SyntaxError: Unexpected token ('SpecialSymbol', ')')
+
+Error due to specialtoken ')' being present where Identifier was expected.
+'''
+
+### Error Input 2
+'''plaintext
+dog;
+
+SyntaxError: Unexpected token ('Identifier', 'dog')
+
+Error due to identifier being present without and expression to define what should be done with it; either write or draw.
+'''
