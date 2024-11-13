@@ -78,27 +78,29 @@ class Parser:
         return node
 
     def parse_write_statement(self):
-        print("Inside parse_write_statement()")  # Debugging print statement
-        self.eat('Keyword')  # Eat 'write'
-        self.eat('SpecialSymbol')  # Eat '('
-    
-        # Handle multiple identifiers or a string
-        expression = self.parse_expression()  # Parse the expression inside the write statement
-        while self.current_token() and self.current_token()[0] == 'Identifier':  # Check if more identifiers exist
-            identifier = self.current_token()[1]
-            self.eat('Identifier')  # Eat additional identifiers
-            expression_node = ASTNode('Identifier', value=identifier)  # Create a node for the identifier
-            expression.add_child(expression_node)  # Add the identifier as a child of the expression node
-    
-        self.eat('SpecialSymbol')  # Eat ')'
-    
-        # Create the AST node for the WriteStatement
-        node = ASTNode('WriteStatement')
-        node.add_child(expression)  # Add the parsed expression as a child of the WriteStatement node
-        
-        print(f"WriteStatement AST node: {node}")  # Debugging print statement
-        return node
+    print("Inside parse_write_statement()")  # Debugging print statement
+    self.eat('Keyword')  # Eat 'write'
+    self.eat('SpecialSymbol')  # Eat '('
 
+    expression = self.parse_expression()  # Parse the first expression inside the write statement
+    
+    # Check if there are more tokens (like more identifiers or operators) to handle
+    while self.current_token() and self.current_token()[0] == 'Operator' and self.current_token()[1] == '+':
+        self.eat('Operator')  # Eat the '+' operator
+        right_expression = self.parse_expression()  # Parse the right-hand side expression
+        operator_node = ASTNode('Expression', value='+')  # Create a new node for the concatenation operator
+        operator_node.add_child(expression)  # Add the left operand
+        operator_node.add_child(right_expression)  # Add the right operand
+        expression = operator_node  # Update the expression to the new operator node
+    
+    self.eat('SpecialSymbol')  # Eat ')'
+
+    # Create the AST node for the WriteStatement
+    node = ASTNode('WriteStatement')
+    node.add_child(expression)  # Add the parsed expression as a child of the WriteStatement node
+    
+    print(f"WriteStatement AST node: {node}")  # Debugging print statement
+    return node
 
 
     def parse_expression(self):
