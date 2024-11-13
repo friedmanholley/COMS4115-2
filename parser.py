@@ -44,16 +44,19 @@ class Parser:
         else:
             raise SyntaxError(f"Unexpected token {current}")
 
-    def parse_draw_statement(self):
-        print("Inside parse_draw_statement()")  # Debugging print statement
-        self.eat('Keyword')  # eat 'draw'
-        self.eat('SpecialSymbol')  # eat '('
-        expression = self.parse_expression()
-        self.eat('SpecialSymbol')  # eat ')'
-        node = ASTNode('DrawStatement')
-        node.add_child(expression)
-        print(f"Draw statement AST node: {node}")  # Debugging print statement
-        return node
+def parse_draw_statement(self):
+    print("Inside parse_draw_statement()")  # Debugging print statement
+    self.eat('Keyword')  # eat 'draw'
+    self.eat('SpecialSymbol')  # eat '('
+    expression = self.parse_expression()  # Parse the expression
+    self.eat('SpecialSymbol')  # eat ')'
+    
+    node = ASTNode('DrawStatement')
+    node.add_child(expression)  # Add the parsed expression as a child of the DrawStatement node
+    
+    print(f"Draw statement AST node: {node}")  # Debugging print statement
+    return node
+
 
     def parse_expression(self):
         left = self.parse_image()
