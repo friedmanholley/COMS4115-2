@@ -59,12 +59,13 @@ class Parser:
         expression = self.parse_expression()  # Parse the expression
         self.eat('SpecialSymbol')  # eat ')'
         
-        print(f"Expression parsed: {expression}")  # Debugging print statement
+        # Create the AST node for the DrawStatement
         node = ASTNode('DrawStatement')
         node.add_child(expression)  # Add the parsed expression as a child of the DrawStatement node
         
         print(f"Draw statement AST node: {node}")  # Debugging print statement
         return node
+
 
     def parse_expression(self):
         print("Inside parse_expression()")  # Debugging print statement
