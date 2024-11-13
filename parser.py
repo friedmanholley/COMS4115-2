@@ -8,7 +8,6 @@ class ASTNode:
         self.children.append(child_node)
 
     def __repr__(self):
-        # Simplified output for testing
         if self.children:
             return f"{self.type}({self.value}): [{', '.join([repr(child) for child in self.children])}]"
         else:
