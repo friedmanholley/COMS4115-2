@@ -42,13 +42,10 @@ class Parser:
         if current and current[0] == 'Keyword':
             keyword = current[1]
             if keyword == 'draw':
-                print("Parsing draw statement...")  # Debugging print statement
                 return self.parse_draw_statement()  # Ensure this method exists
             elif keyword == 'grid':
-                print("Parsing grid statement...")  # Debugging print statement
                 return self.parse_grid_statement()
             elif keyword == 'write':
-                print("Parsing write statement...")  # Debugging print statement
                 return self.parse_write_statement()  # Handle write statements
             else:
                 raise SyntaxError(f"Unknown statement {keyword}")
@@ -60,7 +57,6 @@ class Parser:
             raise SyntaxError(f"Unexpected token {current}")
 
     def parse_write_statement(self):
-        print("Inside parse_write_statement()")  # Debugging print statement
         self.eat('Keyword')  # consume 'write'
         self.eat('SpecialSymbol')  # consume '('
         expression = self.parse_expression()  # Parse the expression inside 'write'
@@ -98,7 +94,6 @@ class Parser:
         return node  # Return the final expression node
 
     def parse_draw_statement(self):
-        print("Inside parse_draw_statement()")  # Debugging print statement
         self.eat('Keyword')  # consume 'draw'
         self.eat('SpecialSymbol')  # consume '('
         expression = self.parse_expression()  # Parse the expression inside 'draw'
@@ -136,7 +131,6 @@ class Parser:
         return node  # Return the final expression node
 
     def parse_grid_statement(self):
-        print("Inside parse_grid_statement()")  # Debugging print statement
         self.eat('Keyword')  # consume 'grid'
         self.eat('SpecialSymbol')  # consume '('
     
@@ -158,7 +152,7 @@ class Parser:
 
         self.eat('SpecialSymbol')  # consume ','
 
-        # Create the GridStatement node and add x and y size as its first children
+        # Create the GridStatement node and add row and coloumn size as its first children
         grid_node = ASTNode('GridStatement')
         grid_node.add_child(row_size)
         grid_node.add_child(coloumn_size)
@@ -170,12 +164,10 @@ class Parser:
         self.eat('SpecialSymbol')  # consume ')'
         self.eat('SpecialSymbol')  # consume ';'
 
-        print(f"Grid statement AST node: {grid_node}")  # Debugging print statement
         return grid_node
 
 
     def parse_expression(self):
-        print("Inside parse_expression()")  # Debugging print statement
 
         # Parse the left-hand side, which could be a write statement, draw statement, identifier, or number
         current = self.current_token()
@@ -223,8 +215,6 @@ class Parser:
         
             # Update `left` to be the operator node for chained operations
             left = operator_node
-
-        print(f"Expression parsed as: {left}")  # Debugging print statement
         return left
 
 
