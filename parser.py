@@ -110,59 +110,68 @@ class Parser:
 
 
     def parse_expression(self):
-        left = self.parse_factor()  # Parse the first factor
-        while self.current_token() and self.current_token()[0] == 'Operator':
-            operator = self.current_token()
-            self.eat('Operator')  # Eat the operator
-            right = self.parse_factor()  # Parse the next factor
+        current = self.current_token()
     
-            # Create a new node for the operator and add the left and right operands as children
-            expr_node = ASTNode('Expression', operator[1])  # Create the operator node
-            expr_node.add_child(left)  # Add the left operand
-            expr_node.add_child(right)  # Add the right operand
-            left = expr_node  # Update left for the next iteration (in case of more operators)
-            
+        # If we encounter a keyword like `write`, handle it as a separate statement
+        if current and current[0] == 'Keyword' and current[1] == 'write':
+            return self.parse_write_statement()
+    
+        left = self.parse_factor()  # Start by parsing the first factor (could be a number, identifier, or expression)
+    
+        # Parse binary operators and subsequent factors
+        while current and current[0] == 'Operator':
+            operator = current[1]
+            self.eat('Operator')
+            right = self.parse_factor()  # Parse the next factor
+            left = ASTNode('Expression', operator)
+            left.add_child(left)  # Add the left operand
+            left.add_child(right)  # Add the right operand
+            current = self.current_token()  # Update the current token
+        
         return left
+
 
 
     def parse_factor(self):
         current = self.current_token()
+    
         if current and current[0] == 'Keyword' and current[1] == 'draw':
-            # Handle the 'draw' expression
             self.eat('Keyword')  # Eat the 'draw' keyword
             self.eat('SpecialSymbol')  # Eat the '('
-            
-            # Parse the expression inside the parentheses
-            expr = self.parse_expression()
-            
+            expr = self.parse_expression()  # Parse the expression inside parentheses
             self.eat('SpecialSymbol')  # Eat the closing ')'
-            
-            # Create an AST node for 'draw' and add the parsed expression as a child
             draw_node = ASTNode('Draw')
             draw_node.add_child(expr)
             return draw_node
-        
+    
+        elif current and current[0] == 'Keyword' and current[1] == 'write':
+            self.eat('Keyword')  # Eat the 'write' keyword
+            self.eat('SpecialSymbol')  # Eat the '('
+            expr = self.parse_expression()  # Parse the expression inside parentheses
+            self.eat('SpecialSymbol')  # Eat the closing ')'
+            write_node = ASTNode('Write')
+            write_node.add_child(expr)
+            return write_node
+    
         elif current and current[0] == 'Identifier':
-            # Handle identifier (e.g., 'sun', 'dog', etc.)
             identifier = current[1]
             self.eat('Identifier')
             return ASTNode('Identifier', identifier)
-        
+    
         elif current and current[0] == 'Number':
-            # Handle number (e.g., '3', '5', etc.)
             number = current[1]
             self.eat('Number')
             return ASTNode('Number', number)
-        
+    
         elif current and current[0] == 'SpecialSymbol' and current[1] == '(':
-            # Handle expressions inside parentheses
             self.eat('SpecialSymbol')  # Eat the '('
-            expr = self.parse_expression()  # Parse the expression
+            expr = self.parse_expression()  # Parse the expression inside parentheses
             self.eat('SpecialSymbol')  # Eat the closing ')'
             return expr
     
         else:
             raise SyntaxError(f"Unexpected token {current}")
+
 
 
     def parse_image(self):
