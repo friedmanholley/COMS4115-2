@@ -83,16 +83,17 @@ class Parser:
                 multiply_node.add_child(number_node)  # Add number as right operand
                 node = multiply_node  # Update node to be the * expression
 
-        # Check for a + operator following the write statement or * expression
-        if self.current_token() and self.current_token()[0] == 'Operator' and self.current_token()[1] == '+':
-            self.eat('Operator')  # consume '+'
-            right_expression = self.parse_expression()  # Parse the expression on the right side of '+'
+        # Check for a + or / operator following the write statement or * expression
+        if self.current_token() and self.current_token()[0] == 'Operator' and self.current_token()[1] in ['+', '/']:
+            operator = self.current_token()[1]
+            self.eat('Operator')  # consume '+' or '/'
+            right_expression = self.parse_expression()  # Parse the expression on the right side of operator
 
-            # Create an Expression node for the '+' operation
-            plus_node = ASTNode('Expression', value='+')
-            plus_node.add_child(node)  # Left side (write * number, if present)
-            plus_node.add_child(right_expression)  # Right side of '+'
-            node = plus_node  # Update node to be the + expression
+            # Create an Expression node for the '+' or '/' operation
+            operator_node = ASTNode('Expression', value=operator)
+            operator_node.add_child(node)
+            operator_node.add_child(right_expression)
+            node = operator_node  # Update node to be the + or / expression
 
         return node  # Return the final expression node
 
@@ -120,16 +121,17 @@ class Parser:
                 multiply_node.add_child(number_node)  # Add number as right operand
                 node = multiply_node  # Update node to be the * expression
 
-        # Check for a + operator following the draw statement or * expression
-        if self.current_token() and self.current_token()[0] == 'Operator' and self.current_token()[1] == '+':
-            self.eat('Operator')  # consume '+'
-            right_expression = self.parse_expression()  # Parse the expression on the right side of '+'
+        # Check for a + or / operator following the write statement or * expression
+        if self.current_token() and self.current_token()[0] == 'Operator' and self.current_token()[1] in ['+', '/']:
+            operator = self.current_token()[1]
+            self.eat('Operator')  # consume '+' or '/'
+            right_expression = self.parse_expression()  # Parse the expression on the right side of operator
 
-            # Create an Expression node for the '+' operation
-            plus_node = ASTNode('Expression', value='+')
-            plus_node.add_child(node)  # Left side (draw * number, if present)
-            plus_node.add_child(right_expression)  # Right side of '+'
-            node = plus_node  # Update node to be the + expression
+            # Create an Expression node for the '+' or '/' operation
+            operator_node = ASTNode('Expression', value=operator)
+            operator_node.add_child(node)
+            operator_node.add_child(right_expression)
+            node = operator_node  # Update node to be the + or / expression
 
         return node  # Return the final expression node
 
