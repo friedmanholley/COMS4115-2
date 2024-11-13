@@ -106,33 +106,33 @@ class Parser:
         self.eat('Number')
         return number
 
-def parse_grid_content(self):
-    """Parse grid content which can be a combination of expressions."""
-    content_node = ASTNode('GridContent')
-    while self.position < len(self.tokens):
-        current = self.current_token()
-        
-        if current and current[0] == 'Keyword':  # Handle 'draw' or 'write' separately
-            if current[1] == 'draw':
-                content_node.add_child(self.parse_draw_statement())
-            elif current[1] == 'write':
-                content_node.add_child(self.parse_write_statement())
-            else:
-                raise SyntaxError(f"Unexpected keyword {current[1]}")
+    def parse_grid_content(self):
+        """Parse grid content which can be a combination of expressions."""
+        content_node = ASTNode('GridContent')
+        while self.position < len(self.tokens):
+            current = self.current_token()
             
-            # Check for comma separation and eat if found
-            if self.current_token() and self.current_token()[0] == 'SpecialSymbol' and self.current_token()[1] == ',':
-                self.eat('SpecialSymbol')  # Eat ','
+            if current and current[0] == 'Keyword':  # Handle 'draw' or 'write' separately
+                if current[1] == 'draw':
+                    content_node.add_child(self.parse_draw_statement())
+                elif current[1] == 'write':
+                    content_node.add_child(self.parse_write_statement())
+                else:
+                    raise SyntaxError(f"Unexpected keyword {current[1]}")
+                
+                # Check for comma separation and eat if found
+                if self.current_token() and self.current_token()[0] == 'SpecialSymbol' and self.current_token()[1] == ',':
+                    self.eat('SpecialSymbol')  # Eat ','
+                else:
+                    break  # Stop if no more commas or invalid tokens
+            elif current and current[0] == 'SpecialSymbol' and current[1] == ')':
+                break  # Stop if we've encountered the closing parenthesis for the grid
             else:
-                break  # Stop if no more commas or invalid tokens
-        elif current and current[0] == 'SpecialSymbol' and current[1] == ')':
-            break  # Stop if we've encountered the closing parenthesis for the grid
-        else:
-            break  # Break if any unexpected token is found
-
-    return content_node
-
-
+                break  # Break if any unexpected token is found
+    
+        return content_node
+    
+    
     def parse_grid_statement(self):
         """Parse a 'grid' statement."""
         self.eat('Keyword')  # eat 'grid'
@@ -143,7 +143,7 @@ def parse_grid_content(self):
         self.eat('SpecialSymbol')  # eat ','
         grid_content = self.parse_grid_content()  # Parse the content inside the grid
         self.eat('SpecialSymbol')  # eat ')'
-        
+            
         node = ASTNode('GridStatement', value=(rows, cols))
         node.add_child(grid_content)  # Add the parsed grid content as a child node
         return node
