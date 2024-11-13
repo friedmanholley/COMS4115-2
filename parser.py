@@ -8,6 +8,7 @@ class ASTNode:
         self.children.append(child_node)
 
     def __repr__(self):
+        # If the node has children, recursively print them
         if self.children:
             children_repr = "\n    ".join([repr(child) for child in self.children])
             return f"ASTNode({self.type}, {self.value})\n    {children_repr}"
