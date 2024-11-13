@@ -63,8 +63,12 @@ class Parser:
         node = ASTNode('DrawStatement')
         node.add_child(expression)  # Add the parsed expression as a child of the DrawStatement node
         
+        # Debugging: Check the children of DrawStatement after adding expression
+        print(f"DrawStatement children: {node.children}")  # Debugging: Show the children of DrawStatement
+        
         print(f"Draw statement AST node: {node}")  # Debugging print statement
         return node
+
 
 
     def parse_expression(self):
