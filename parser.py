@@ -8,7 +8,11 @@ class ASTNode:
         self.children.append(child_node)
 
     def __repr__(self):
-        return f"ASTNode({self.type}, {self.value})"
+        if self.children:
+            children_repr = "\n    ".join([repr(child) for child in self.children])
+            return f"ASTNode({self.type}, {self.value})\n    {children_repr}"
+        else:
+            return f"ASTNode({self.type}, {self.value})"
 
 class Parser:
     def __init__(self, tokens):
