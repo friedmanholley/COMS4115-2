@@ -43,10 +43,13 @@ class Parser:
             keyword = current[1]
             if keyword == 'draw':
                 print("Parsing draw statement...")  # Debugging print statement
-                return self.parse_draw_statement()  # Ensure this method exists
+                return self.parse_draw_statement()
             elif keyword == 'grid':
                 print("Parsing grid statement...")  # Debugging print statement
-                return self.parse_grid_statement()
+                return self.parse_grid_statement()  # This is now correctly defined
+            elif keyword == 'write':  # Handle 'write' keyword
+                print("Parsing write statement...")  # Debugging print statement
+                return self.parse_write_statement()  # Parse the write statement
             else:
                 raise SyntaxError(f"Unknown statement {keyword}")
         elif current[0] == 'SpecialSymbol' and current[1] == ';':
@@ -55,6 +58,7 @@ class Parser:
             return None  # No statement to parse
         else:
             raise SyntaxError(f"Unexpected token {current}")
+
 
     def parse_draw_statement(self):
         print("Inside parse_draw_statement()")  # Debugging print statement
@@ -73,6 +77,19 @@ class Parser:
         print(f"Draw statement AST node: {node}")  # Debugging print statement
         return node
 
+    def parse_write_statement(self):
+        print("Inside parse_write_statement()")  # Debugging print statement
+        self.eat('Keyword')  # eat 'write'
+        self.eat('SpecialSymbol')  # eat '('
+        expression = self.parse_expression()  # Parse the expression inside the write statement
+        self.eat('SpecialSymbol')  # eat ')'
+        
+        # Create the AST node for the WriteStatement
+        node = ASTNode('WriteStatement')
+        node.add_child(expression)  # Add the parsed expression as a child of the WriteStatement node
+        
+        print(f"WriteStatement AST node: {node}")  # Debugging print statement
+        return node
 
 
     def parse_expression(self):
