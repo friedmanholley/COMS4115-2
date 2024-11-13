@@ -146,31 +146,20 @@ class Parser:
         return left
 
 
-    def parse_factor(self):
-        current = self.current_token()
-        
-        # Case 1: Handle parenthesized expressions
-        if current and current[0] == 'SpecialSymbol' and current[1] == '(':
-            self.eat('SpecialSymbol')  # Eat the '('
-            expr = self.parse_expression()  # Parse the inner expression
-            self.eat('SpecialSymbol')  # Eat the ')'
-            return expr
-        
-        # Case 2: Handle identifiers (e.g., sun, dog, etc.)
-        elif current and current[0] == 'Identifier':
-            identifier = current[1]
-            self.eat('Identifier')  # Eat the identifier
-            return identifier  # Return the identifier (or could be wrapped in an AST node)
-        
-        # Case 3: Handle numbers
-        elif current and current[0] == 'Number':
-            number = current[1]
-            self.eat('Number')  # Eat the number
-            return number  # Return the number (or could be wrapped in an AST node)
-        
-        # Case 4: Handle invalid factor (error case)
-        else:
-            raise SyntaxError(f"Unexpected token {current}")
+    def parse_expression(self):
+        left = self.parse_factor()  # Parse the first factor
+        while self.current_token() and self.current_token()[0] == 'Operator':
+            operator = self.current_token()
+            self.eat('Operator')  # Eat the operator
+            right = self.parse_factor()  # Parse the next factor
+    
+            # Create a new node for the operator and add the left and right operands as children
+            expr_node = ASTNode('Expression', operator[1])  # Create the operator node
+            expr_node.add_child(left)  # Add the left operand
+            expr_node.add_child(right)  # Add the right operand
+            left = expr_node  # Update left for the next iteration (in case of more operators)
+            
+        return left
 
 
     def parse_image(self):
