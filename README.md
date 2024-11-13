@@ -56,7 +56,7 @@ Number          -> [0-9]+
 
 ---
 
-# Sample Input Programs
+# Sample Input Programs (included in `sample.txt`)
 
 ### Sample Input 1
 ```plaintext
@@ -97,16 +97,34 @@ GRID_STATEMENT
 This would generate a 2x2 grid with images of cat and dog on the first row, and word illustration of cat and dog on the second.
 ```
 
-#### Sample Input 3
+#### Sample Input 4
 ```plaintext
-grid(2, 2, draw(cat), draw(dog), write(cat), write(dog));
+write(cat) * 3 + draw(dog);
 
-GRID_STATEMENT
-├── GRID_CONTENT
-│   ├── DRAW_STATEMENT
+WRITE_STATEMENT
+├── EXPRESSION (+)
+│   ├── EXPRESSION (*)
 │   │   ├── IDENTIFIER (cat)
+│   │   ├── *
+│   │   └── NUMBER (3)
 │   └── DRAW_STATEMENT
 │       ├── IDENTIFIER (dog)
 
-This would generate a 2x2 grid with images of cat and dog on the first row, and word illustration of cat and dog on the second.
+
+This would generate 3 word illustration of the text cat, followed by one image of a dog.
+```
+
+### Sample Input 5
+```plaintext
+write(sun) / draw(dog);
+
+WRITE_STATEMENT
+├── EXPRESSION (/)
+│   ├── IDENTIFIER (sun)
+│   ├── /
+│   └── DRAW_STATEMENT
+│       ├── IDENTIFIER (dog)
+
+
+This would generate word illustration of sun over top of an image of a dog.
 ```
