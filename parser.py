@@ -1,3 +1,15 @@
+class ASTNode:
+    def __init__(self, type_, value=None):
+        self.type = type_
+        self.value = value
+        self.children = []
+
+    def add_child(self, child_node):
+        self.children.append(child_node)
+
+    def __repr__(self):
+        return f"ASTNode({self.type}, {self.value})"
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -23,14 +35,11 @@ class Parser:
 
     def parse_statement(self):
         current = self.current_token()
-        if current is None:
-            return None  # Handle the end of the program gracefully
-
-        if current[0] == 'Keyword':
+        if current and current[0] == 'Keyword':
             keyword = current[1]
             if keyword == 'draw':
                 print("Parsing draw statement...")  # Debugging print statement
-                return self.parse_draw_statement()
+                return self.parse_draw_statement()  # Ensure this method exists
             elif keyword == 'grid':
                 print("Parsing grid statement...")  # Debugging print statement
                 return self.parse_grid_statement()
@@ -40,23 +49,21 @@ class Parser:
             # Skip over semicolons as statement terminators
             self.eat('SpecialSymbol')  # eat ';'
             return None  # No statement to parse
-
         else:
             raise SyntaxError(f"Unexpected token {current}")
 
-def parse_draw_statement(self):
-    print("Inside parse_draw_statement()")  # Debugging print statement
-    self.eat('Keyword')  # eat 'draw'
-    self.eat('SpecialSymbol')  # eat '('
-    expression = self.parse_expression()  # Parse the expression
-    self.eat('SpecialSymbol')  # eat ')'
-    
-    node = ASTNode('DrawStatement')
-    node.add_child(expression)  # Add the parsed expression as a child of the DrawStatement node
-    
-    print(f"Draw statement AST node: {node}")  # Debugging print statement
-    return node
-
+    def parse_draw_statement(self):
+        print("Inside parse_draw_statement()")  # Debugging print statement
+        self.eat('Keyword')  # eat 'draw'
+        self.eat('SpecialSymbol')  # eat '('
+        expression = self.parse_expression()  # Parse the expression
+        self.eat('SpecialSymbol')  # eat ')'
+        
+        node = ASTNode('DrawStatement')
+        node.add_child(expression)  # Add the parsed expression as a child of the DrawStatement node
+        
+        print(f"Draw statement AST node: {node}")  # Debugging print statement
+        return node
 
     def parse_expression(self):
         left = self.parse_image()
@@ -79,14 +86,23 @@ def parse_draw_statement(self):
         else:
             raise SyntaxError(f"Unexpected token in image: {current}")
 
-class ASTNode:
-    def __init__(self, type_, value=None):
-        self.type = type_
-        self.value = value
-        self.children = []
+    def parse_number(self):
+        number = self.current_token()[1]
+        self.eat('Number')
+        return number
 
-    def add_child(self, child_node):
-        self.children.append(child_node)
-
-    def __repr__(self):
-        return f"ASTNode({self.type}, {self.value})"
+    def parse_grid_content(self):
+        content_node = ASTNode('GridContent')
+        while self.position < len(self.tokens):
+            current = self.current_token()
+            if current and current[0] in ['Keyword', 'Identifier']:
+                content_node.add_child(self.parse_expression())
+                if self.current_token() and self.current_token()[0] == 'SpecialSymbol' and self.current_token()[1] == ',':
+                    self.eat('SpecialSymbol')  # eat ','
+                else:
+                    break  # Stop if no more commas or invalid tokens
+            elif current and current[0] == 'SpecialSymbol' and current[1] == ')':
+                break  # Stop if we've encountered the closing parenthesis for the grid
+            else:
+                break  # Break if any unexpected token is found
+        return content_node
