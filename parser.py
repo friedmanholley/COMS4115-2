@@ -67,21 +67,22 @@ class Parser:
 
 
     def parse_draw_statement(self):
-        print("Inside parse_draw_statement()")  # Debugging print statement
-        self.eat('Keyword')  # eat 'draw'
-        self.eat('SpecialSymbol')  # eat '('
-        expression = self.parse_expression()  # Parse the expression
-        self.eat('SpecialSymbol')  # eat ')'
-        
-        # Create the AST node for the DrawStatement
-        node = ASTNode('DrawStatement')
-        node.add_child(expression)  # Add the parsed expression as a child of the DrawStatement node
-        
-        # Debugging: Check the children of DrawStatement after adding expression
-        print(f"DrawStatement children: {node.children}")  # Debugging: Show the children of DrawStatement
-        
-        print(f"Draw statement AST node: {node}")  # Debugging print statement
-        return node
+        current = self.current_token()
+    
+        if current[0] == 'Keyword' and current[1] == 'draw':
+            self.eat('Keyword')  # Eat the 'draw' keyword
+            self.eat('SpecialSymbol')  # Eat the '('
+    
+            # Parse the expression inside the parentheses
+            expr = self.parse_expression()
+    
+            # Ensure we get the closing ')'
+            self.eat('SpecialSymbol')  # Eat the ')'
+    
+            draw_node = ASTNode('Draw')
+            draw_node.add_child(expr)
+            return draw_node
+
 
     def parse_write_statement(self):
         print("Inside parse_write_statement()")  # Debugging print statement
@@ -110,25 +111,24 @@ class Parser:
 
 
     def parse_expression(self):
-        current = self.current_token()
+        left = self.parse_factor()  # Parse the first factor
     
-        # If we encounter a keyword like `write`, handle it as a separate statement
-        if current and current[0] == 'Keyword' and current[1] == 'write':
-            return self.parse_write_statement()
+        while True:
+            current = self.current_token()
+            
+            # If we encounter an operator, it should be part of the expression
+            if current and current[0] == 'Operator':
+                operator = current[1]
+                self.eat('Operator')
+                right = self.parse_factor()  # Parse the next factor
+                left = ASTNode('Expression', operator)
+                left.add_child(left)  # Add the left operand
+                left.add_child(right)  # Add the right operand
+            else:
+                break
     
-        left = self.parse_factor()  # Start by parsing the first factor (could be a number, identifier, or expression)
-    
-        # Parse binary operators and subsequent factors
-        while current and current[0] == 'Operator':
-            operator = current[1]
-            self.eat('Operator')
-            right = self.parse_factor()  # Parse the next factor
-            left = ASTNode('Expression', operator)
-            left.add_child(left)  # Add the left operand
-            left.add_child(right)  # Add the right operand
-            current = self.current_token()  # Update the current token
-        
         return left
+
 
 
 
@@ -136,22 +136,7 @@ class Parser:
         current = self.current_token()
     
         if current and current[0] == 'Keyword' and current[1] == 'draw':
-            self.eat('Keyword')  # Eat the 'draw' keyword
-            self.eat('SpecialSymbol')  # Eat the '('
-            expr = self.parse_expression()  # Parse the expression inside parentheses
-            self.eat('SpecialSymbol')  # Eat the closing ')'
-            draw_node = ASTNode('Draw')
-            draw_node.add_child(expr)
-            return draw_node
-    
-        elif current and current[0] == 'Keyword' and current[1] == 'write':
-            self.eat('Keyword')  # Eat the 'write' keyword
-            self.eat('SpecialSymbol')  # Eat the '('
-            expr = self.parse_expression()  # Parse the expression inside parentheses
-            self.eat('SpecialSymbol')  # Eat the closing ')'
-            write_node = ASTNode('Write')
-            write_node.add_child(expr)
-            return write_node
+            return self.parse_draw_statement()  # Handle the draw statement inside an expression
     
         elif current and current[0] == 'Identifier':
             identifier = current[1]
@@ -171,7 +156,6 @@ class Parser:
     
         else:
             raise SyntaxError(f"Unexpected token {current}")
-
 
 
     def parse_image(self):
