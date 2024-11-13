@@ -1,3 +1,15 @@
+class ASTNode:
+    def __init__(self, type_, value=None):
+        self.type = type_
+        self.value = value
+        self.children = []
+
+    def add_child(self, child_node):
+        self.children.append(child_node)
+
+    def __repr__(self):
+        return f"ASTNode({self.type}, {self.value})"
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
