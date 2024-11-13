@@ -79,17 +79,26 @@ class Parser:
 
     def parse_write_statement(self):
         print("Inside parse_write_statement()")  # Debugging print statement
-        self.eat('Keyword')  # eat 'write'
-        self.eat('SpecialSymbol')  # eat '('
+        self.eat('Keyword')  # Eat 'write'
+        self.eat('SpecialSymbol')  # Eat '('
+    
+        # Handle multiple identifiers or a string
         expression = self.parse_expression()  # Parse the expression inside the write statement
-        self.eat('SpecialSymbol')  # eat ')'
-        
+        while self.current_token() and self.current_token()[0] == 'Identifier':  # Check if more identifiers exist
+            identifier = self.current_token()[1]
+            self.eat('Identifier')  # Eat additional identifiers
+            expression_node = ASTNode('Identifier', value=identifier)  # Create a node for the identifier
+            expression.add_child(expression_node)  # Add the identifier as a child of the expression node
+    
+        self.eat('SpecialSymbol')  # Eat ')'
+    
         # Create the AST node for the WriteStatement
         node = ASTNode('WriteStatement')
         node.add_child(expression)  # Add the parsed expression as a child of the WriteStatement node
         
         print(f"WriteStatement AST node: {node}")  # Debugging print statement
         return node
+
 
 
     def parse_expression(self):
