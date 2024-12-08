@@ -33,12 +33,16 @@ echo "Running the parser on $INPUT_FILE..."
 
 if [ "$EXT" == "py" ] || [ "$EXT" == "txt" ]; then
     # If it's a .py or .txt file, pass the file to the parser
-    python parse.py "$INPUT_FILE"
+    python parse.py "$INPUT_FILE" > ast.json
 else
     echo "Unsupported file type. Please provide a .py or .txt file."
     exit 1
 fi
 
-# Step 5: Deactivate the virtual environment
+# Step 5: Run Code Generation
+echo "Running code generation on ast.json..."
+python codegen.py ast.json
+
+# Step 6: Deactivate the virtual environment
 echo "Deactivating the virtual environment..."
 deactivate
