@@ -39,7 +39,9 @@ class CodeGenerator:
             ]
         }
 
-        # ASCII font for WRITE statements. font adapted from https://fsymbols.com/generators/carty/
+        # ASCII font for WRITE statements, A-Z, 0-9. 
+        # What to do with punctuation?
+        # font adapted from https://fsymbols.com/generators/carty/
         self.char_templates = {
             'A': [
                 "╭━━━╮",
@@ -253,8 +255,8 @@ class CodeGenerator:
             '0': [
                 "╭━━━╮",
                 "┃╭━╮┃",
-                "┃┃┃┃┃",
-                "┃┃┃┃┃",
+                "┃┃\┃┃",
+                "┃┃\┃┃",
                 "┃╰━╯┃",
                 "╰━━━╯"
             ],
