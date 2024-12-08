@@ -39,7 +39,7 @@ class CodeGenerator:
             ]
         }
 
-        # ASCII font for WRITE statements, A-Z, 0-9. 
+        # ASCII font for WRITE statements, A-Z, 0-9, [?.!, ]. 
         # What to do with punctuation?
         # font adapted from https://fsymbols.com/generators/carty/
         self.char_templates = {
@@ -332,6 +332,46 @@ class CodeGenerator:
                 "╭━━╯┃",
                 "╰━━━╯"
             ]
+            '?': [            
+                "╭━━━╮",
+                "┃╭━╮┃",
+                "╰╯╭╯┃",
+                "  ┃╭╯",
+                "  ╭╮ ",
+                "  ╰╯ "
+            ]
+            '!': [
+                " ╭╮  ",
+                " ┃┃  ",
+                " ┃┃  ",
+                " ╰╯  ",
+                " ╭╮  ",
+                " ╰╯  "
+            ],
+            '.': [            
+                "     ",
+                "     ",
+                "     ",
+                "     ",
+                "  ╭╮ ",
+                "  ╰╯ "
+            ],
+            ' ': [           
+                "     ",
+                "     ",
+                "     ",
+                "     ",
+                "     ",
+                "     "
+            ],
+            ',': [            
+                "     ",
+                "     ",
+                "     ",
+                "  ╭╮ ",
+                "  ╰┫ ",
+                "   ╯ "
+            ]
         }
 
     def generate_program(self, program_node):
@@ -367,28 +407,35 @@ class CodeGenerator:
         else:
             return ["[WRITE ERROR: Invalid text]"]
 
-    def generate_text(self, text):
-        # For each character in the text, get its ASCII template and then
-        # combine them horizontally line-by-line.
-        lines = []
-        # Convert text to uppercase or handle both cases
+def generate_text(self, text):
+        # Convert to uppercase if your char_templates keys are uppercase
         text = text.upper()
-        char_images = [self.char_templates.get(ch, ["[?]"]) for ch in text]
 
-        # First, ensure all characters have the same number of lines
-        max_lines = max(len(img) for img in char_images if isinstance(img, list))
-        # Pad images with blank lines if needed
-        for i, img in enumerate(char_images):
-            if isinstance(img, list):
-                char_images[i] = img + [""] * (max_lines - len(img))
+        # Fetch ASCII art for each character
+        char_images = []
+        for ch in text:
+            if ch in self.char_templates:
+                char_images.append(self.char_templates[ch])
             else:
-                # If the character isn't found, represent it as [?]
-                char_images[i] = ["[?]"] + [""] * (max_lines - 1)
+                # If character not found, use a placeholder
+                char_images.append(["[???]"])
 
-        # Now combine horizontally
-        for line_idx in range(max_lines):
+        # Determine the max height
+        max_height = max(len(img) for img in char_images)
+
+        # Pad all images to the same height
+        for i, img in enumerate(char_images):
+            if len(img) < max_height:
+                char_images[i] = img + [""] * (max_height - len(img))
+
+        # Combine horizontally
+        lines = []
+        for line_idx in range(max_height):
             line_parts = [img[line_idx] for img in char_images]
-            lines.append(" ".join(line_parts))
+            # Join line parts with a space or without depending on how you want spacing
+            line = " ".join(line_parts)
+            lines.append(line)
+
         return lines
 
     def generate_grid(self, grid_node):
