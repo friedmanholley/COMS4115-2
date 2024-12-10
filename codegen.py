@@ -418,6 +418,12 @@ class CodeGenerator:
             "    except ValueError:",
             "        return ['[INVALID REPEAT COUNT]']",
             "",
+            "def combine_horizontal(left, right):",
+            "    max_height = max(len(left), len(right))",
+            "    left = left + [''] * (max_height - len(left))  # Pad shorter template",
+            "    right = right + [''] * (max_height - len(right))  # Pad shorter template",
+            "    return [l + ' ' + r for l, r in zip(left, right)]",
+            "",
             "# ASCII templates",
             "templates = {"
         ]
@@ -478,6 +484,9 @@ class CodeGenerator:
             elif op == '/':
                 right = self.generate_expression(expr_node.children[1])
                 return f'combine_top_bottom({left}, {right})'
+            elif op == '+':
+                right = self.generate_expression(expr_node.children[1])
+                return f'combine_horizontal({left}, {right})'
             else:
                 return '"[INVALID OPERATOR]"'
         return '"[INVALID EXPRESSION]"'
