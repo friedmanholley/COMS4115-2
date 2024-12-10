@@ -58,7 +58,7 @@ Number          -> [0-9]+
 
 ---
 
-# Sample Input Programs (included in `sample.txt`)
+# Sample Input Programs (included in `sample3.txt`)
 
 ### Sample Input 1
 ```plaintext
