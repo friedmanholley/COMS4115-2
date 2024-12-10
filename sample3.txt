@@ -4,3 +4,4 @@ write(hello);
 write(world);
 draw(house + bird);
 draw(horse);
+dog;
