@@ -136,20 +136,11 @@ draw(house + bird);
                                
 ```
 
-### Error Input 1
+### Error Input
 ```plaintext
 draw(horse);
 
 We have set this up unknown identifiers passed to draw to still generate code, as shown below.
 
 [Unknown Image]
-```
-
-### Error Input 2
-```plaintext
-dog;
-
-SyntaxError: Unexpected token ('Identifier', 'dog')
-
-Error due to identifier being present without and expression to define what should be done with it; either write or draw.
 ```
