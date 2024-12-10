@@ -1,5 +1,8 @@
 class CodeGenerator:
     def __init__(self):
+        # Define grid flag
+        self.is_grid = 0
+        
         # Define standard dimensions
         self.standard_width = 15
         self.standard_height = 6
@@ -45,6 +48,7 @@ class CodeGenerator:
 
 
         # ASCII font for WRITE statements, A-Z, 0-9, [?.!, ]. 
+        # What to do with punctuation?
         # font adapted from https://fsymbols.com/generators/carty/
         self.char_templates = {
             'A': [
@@ -424,6 +428,21 @@ class CodeGenerator:
             "    right = right + [''] * (max_height - len(right))  # Pad shorter template",
             "    return [l + ' ' + r for l, r in zip(left, right)]",
             "",
+            "def grid(x, y, *elements):",
+            "    if len(elements) != x * y:",
+            "        raise ValueError(\"Grid dimensions do not match the number of elements.\")",
+            "",
+            "    max_lines = max(len(element) for element in elements)",
+            "    for i in range(y):",
+            "        row_elements = elements[i * x:(i + 1) * x]",
+            "        for line_idx in range(max_lines):",
+            "            for element in row_elements:",
+            "                if line_idx < len(element):",
+            "                    print(element[line_idx], end='  ')",
+            "                else:",
+            "                    print(' ' * len(element[0]), end='  ')",
+            "            print()",
+            "",
             "# ASCII templates",
             "templates = {"
         ]
@@ -448,17 +467,35 @@ class CodeGenerator:
             return self.generate_draw(stmt_node)
         elif stmt_node.type == 'WriteStatement':
             return self.generate_write(stmt_node)
+        elif stmt_node.type == 'GridStatement':
+            self.is_grid = 1
+            return self.generate_grid(stmt_node)
         return None
 
     def generate_draw(self, draw_node):
         """Generates Python code to draw ASCII art."""
-        expr = self.generate_expression(draw_node.children[0])        
+        expr = self.generate_expression(draw_node.children[0])  
+        if self.is_grid:
+            return f"{expr}"
         return f"draw_ascii_art({expr})"
 
     def generate_write(self, write_node):
         """Generates Python code to write ASCII text."""
         text = write_node.children[0].value.upper()
         return self.generate_text_output(text)
+        
+    def generate_grid(self, grid_node):
+        """Generates Python code for a grid statement."""
+        x = grid_node.children[0].value
+        y = grid_node.children[1].value
+
+        # Ensure GridContent is processed properly
+        elements = []
+        for child in grid_node.children[2].children:
+            elem_code = self.generate_statement(child)
+            elements.append(elem_code)
+        self.is_grid = 0
+        return f"grid({x}, {y}, {', '.join(elements)})"
 
     def generate_text_output(self, text):
         """Generates Python code to output ASCII text."""
