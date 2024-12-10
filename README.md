@@ -3,8 +3,7 @@
 - William Culver: `wrc2120`
 
 ### **Video**
-[Link to Video in Google Drive](https://drive.google.com/file/d/1YmILulBoxk2YLLDbePkGMrNR2byiX5m7/view?usp=sharing)
-
+[Link to Video in Google Drive](https://drive.google.com/file/d/1u4tYUJfKhyV_IYgEtdhpSMHHbjwozCKT/view?usp=share_link)
 ### **Context-Free Grammar (CFG)**
 
 #### **Non-Terminals:**
