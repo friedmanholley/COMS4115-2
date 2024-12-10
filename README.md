@@ -40,6 +40,11 @@ Number          -> [0-9]+
 ```
 
 ---
+### **Explanation of Code**:
+'alltogether.py' imports 'codegen.py', 'lexer.py' and 'parser.py' which contain the three steps we have developed. 
+'codegen.sh' accepts a .txt or .py file as input to the executable and will out put ASCII.
+'sample3.txt' contains 7 sample lines of code. The last line contains a syntax error which will prevent the first 6 from processing, so it is commented out. 
+---
 
 ### **Explanation of the Grammar**:
 
