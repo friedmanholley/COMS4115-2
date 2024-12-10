@@ -41,8 +41,12 @@ fi
 
 # Step 5: Run Code Generation
 echo "Running code generation on ast.json..."
-python alltogether.py ast.json
+python alltogether.py ast.json > intermediate_code.py
 
-# Step 6: Deactivate the virtual environment
+# Step 6: Execute the intermediate code
+echo "Executing intermediate_code.py..."
+python intermediate_code.py
+
+# Step 7: Deactivate the virtual environment
 echo "Deactivating the virtual environment..."
 deactivate
