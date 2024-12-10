@@ -1,46 +1,50 @@
 class CodeGenerator:
     def __init__(self):
+        # Define standard dimensions
+        self.standard_width = 15
+        self.standard_height = 6
+        
         # Templates for images (dog, cat, etc.) generated using chatGPT.
         self.templates = {
-            "dog": [
+            'dog': [
                 "^..^      /",
-                "/_/\_____/",
-                "   /\   /\ "
+                "/_/\\_____/",
+                "   /\\   /\\ "
             ],
-            "cat": [
-                " /\_/\ ",
+            'cat': [
+                " /\\_/\\ ",
                 "( o.o )",
                 " > ^ < "
             ],
-            "bird": [
-                "  /\_/\  ",
+            'bird': [
+                "  /\\_/\\  ",
                 "(  • •  )",
                 "  =_Y_=  ",
                 "   `-`   "
             ],
-            "sun": [
+            'sun': [
                 "   \\ | /   ",
                 " --   *   -- ",
                 "   / | \\   "
             ],
-            "tree": [
+            'tree': [
                 "   *   ",
                 "  ***  ",
                 " ***** ",
                 "   |   ",
                 "   |   "
             ],
-            "house": [
+            'house': [
                 "   /\\   ",
                 "  /  \\  ",
                 " /____\\ ",
                 "|      |",
                 "|______|"
             ]
-        }
+        }   
+
 
         # ASCII font for WRITE statements, A-Z, 0-9, [?.!, ]. 
-        # What to do with punctuation?
         # font adapted from https://fsymbols.com/generators/carty/
         self.char_templates = {
             'A': [
@@ -110,8 +114,8 @@ class CodeGenerator:
             'I': [
                 '╭━━╮',
                 '╰┫┣╯',
-                ' ┃┃',
-                ' ┃┃',
+                ' ┃┃ ',
+                ' ┃┃ ',
                 '╭┫┣╮',
                 '╰━━╯'
             ],
@@ -126,15 +130,15 @@ class CodeGenerator:
             'K': [
                 '╭╮╭━╮',
                 '┃┃┃╭╯',
-                '┃╰╯╯',
-                '┃╭╮┃',
+                '┃╰╯╯ ',
+                '┃╭╮┃ ',
                 '┃┃┃╰╮',
                 '╰╯╰━╯'
             ],
             'L': [
-                '╭╮',
-                '┃┃',
-                '┃┃',
+                '╭╮   ',
+                '┃┃   ',
+                '┃┃   ',
                 '┃┃ ╭╮',
                 '┃╰━╯┃',
                 '╰━━━╯'
@@ -168,8 +172,8 @@ class CodeGenerator:
                 '┃╭━╮┃',
                 '┃╰━╯┃',
                 '┃╭━━╯',
-                '┃┃',
-                '╰╯'
+                '┃┃   ',
+                '╰╯   '
             ],
             'Q': [
                 '╭━━━╮',
@@ -200,9 +204,9 @@ class CodeGenerator:
                 '╭━━━━╮',
                 '┃╭╮╭╮┃',
                 '╰╯┃┃╰╯',
-                '  ┃┃',
-                '  ┃┃',
-                '  ╰╯'
+                '  ┃┃  ',
+                '  ┃┃  ',
+                '  ╰╯  '
             ],
             'U': [
                 '╭╮ ╭╮',
@@ -216,9 +220,9 @@ class CodeGenerator:
                 '╭╮  ╭╮',
                 '┃╰╮╭╯┃',
                 '╰╮┃┃╭╯',
-                ' ┃╰╯┃',
-                ' ╰╮╭╯',
-                '  ╰╯'
+                ' ┃╰╯┃ ',
+                ' ╰╮╭╯ ',
+                '  ╰╯  '
             ],
             'W': [
                 '╭╮╭╮╭╮',
@@ -226,13 +230,13 @@ class CodeGenerator:
                 '┃┃┃┃┃┃',
                 '┃╰╯╰╯┃',
                 '╰╮╭╮╭╯',
-                ' ╰╯╰╯'
+                ' ╰╯╰╯ '
             ],
             'X': [
                 '╭━╮╭━╮',
                 '╰╮╰╯╭╯',
-                ' ╰╮╭╯',
-                ' ╭╯╰╮',
+                ' ╰╮╭╯ ',
+                ' ╭╯╰╮ ',
                 '╭╯╭╮╰╮',
                 '╰━╯╰━╯'
             ],
@@ -240,9 +244,9 @@ class CodeGenerator:
                 '╭╮  ╭╮',
                 '┃╰╮╭╯┃',
                 '╰╮╰╯╭╯',
-                ' ╰╮╭╯',
-                '  ┃┃',
-                '  ╰╯'
+                ' ╰╮╭╯ ',
+                '  ┃┃  ',
+                '  ╰╯  '
             ],
             'Z': [
                 '╭━━━━╮',
@@ -374,115 +378,106 @@ class CodeGenerator:
             ]
         }
 
-    def generate_program(self, program_node):
-        results = []
-        for stmt in program_node.children:
-            result = self.generate_statement(stmt)
-            if isinstance(result, list):
-                results.extend(result)
-            else:
-                results.append(str(result))
-        return "\n".join(results)
+        # Normalize all templates
+        self.templates = {k: self.normalize_template(v) for k, v in self.templates.items()}
+        self.char_templates = {k: self.normalize_template(v) for k, v in self.char_templates.items()}
+
+    def normalize_template(self, template):
+        """Normalize a template to the standard width and height."""
+        # Ensure each row has the standard width by centering it
+        padded_rows = [row.center(self.standard_width) for row in template]
+
+        # Add empty rows to reach the standard height
+        while len(padded_rows) < self.standard_height:
+            padded_rows.append(" " * self.standard_width)
+
+        # Truncate rows if they exceed the standard height
+        return padded_rows[:self.standard_height]
+
+    def generate_program(self, ast):
+        """Generates the Python program based on the AST."""
+        program_lines = [
+            "import warnings",
+            "from warnings import filterwarnings",
+            "filterwarnings(\"ignore\", category=SyntaxWarning)",
+            "",
+            "def draw_ascii_art(template):",
+            "    for line in template:",
+            "        print(line)",
+            "",
+            "def combine_top_bottom(top, bottom):",
+            "    max_width = max(len(top[0]), len(bottom[0]))",
+            "    top = [line.ljust(max_width) for line in top]",
+            "    bottom = [line.ljust(max_width) for line in bottom]",
+            "    return top + bottom",
+            "",
+            "def repeat_horizontal(template, times):",
+            "    try:",
+            "        times = int(times)",
+            "        return [line * times for line in template]",
+            "    except ValueError:",
+            "        return ['[INVALID REPEAT COUNT]']",
+            "",
+            "# ASCII templates",
+            "templates = {"
+        ]
+
+        # Add templates to the code
+        for name, template in self.templates.items():
+            template_lines = ",\n            ".join(f'"{line}"' for line in template)
+            program_lines.append(f'    "{name}": [\n            {template_lines}\n        ],')
+        program_lines.append("    }")
+
+        # Generate statements from the AST
+        for stmt in ast.children:
+            stmt_code = self.generate_statement(stmt)
+            if stmt_code:
+                program_lines.append(stmt_code)
+
+        return "\n".join(program_lines)
 
     def generate_statement(self, stmt_node):
+        """Generates Python code for a single statement."""
         if stmt_node.type == 'DrawStatement':
             return self.generate_draw(stmt_node)
         elif stmt_node.type == 'WriteStatement':
             return self.generate_write(stmt_node)
-        elif stmt_node.type == 'GridStatement':
-            return self.generate_grid(stmt_node)
-        # Handle other statements as needed
+        return None
 
     def generate_draw(self, draw_node):
-        # Assume draw_node.children[0] is the expression node
-        image_data = self.generate_expression(draw_node.children[0])
-        return image_data
+        """Generates Python code to draw ASCII art."""
+        expr = self.generate_expression(draw_node.children[0])        
+        return f"draw_ascii_art({expr})"
 
     def generate_write(self, write_node):
-        # write_node.children[0] contains an expression or identifier representing text
-        # Assume this expression is just an identifier node with the text to write
-        text_node = write_node.children[0]
-        if text_node.type == 'Identifier':
-            return self.generate_text(text_node.value)
-        else:
-            return ["[WRITE ERROR: Invalid text]"]
+        """Generates Python code to write ASCII text."""
+        text = write_node.children[0].value.upper()
+        return self.generate_text_output(text)
 
-    def generate_text(self, text):
-            # Convert to uppercase
-            text = text.upper()
-    
-            # Fetch ASCII art for each character
-            char_images = []
-            for ch in text:
-                if ch in self.char_templates:
-                    char_images.append(self.char_templates[ch])
-                else:
-                    # If character not found, input space placeholder
-                    char_images.append(selfe.char_templates[' '])
-    
-            # Determine the max height
-            max_height = max(len(img) for img in char_images)
-    
-            # Pad all images to the same height
-            for i, img in enumerate(char_images):
-                if len(img) < max_height:
-                    char_images[i] = img + [""] * (max_height - len(img))
-    
-            # Combine horizontally
-            lines = []
-            for line_idx in range(max_height):
-                line_parts = [img[line_idx] for img in char_images]
-                # Join line parts with a space or without depending on how you want spacing
-                line = " ".join(line_parts)
-                lines.append(line)
-    
-            return lines
-
-    def generate_grid(self, grid_node):
-        rows, cols = grid_node.value
-        grid_content = grid_node.children[0].children
-        output = []
-        index = 0
-        for r in range(rows):
-            row_images = []
-            for c in range(cols):
-                if index < len(grid_content):
-                    img = self.generate_expression(grid_content[index])
-                    row_images.append(img)
-                    index += 1
-            # horizontally combine images for one row
-            if row_images:
-                combined = row_images[0]
-                for img in row_images[1:]:
-                    combined = self.combine_side_by_side(combined, img)
-                output.extend(combined)
-        return output
+    def generate_text_output(self, text):
+        """Generates Python code to output ASCII text."""
+        output = [""] * self.standard_height
+        for char in text:
+            # Get the ASCII art for the character, or use blank rows if undefined
+            char_template = self.char_templates.get(char, [" " * self.standard_width] * self.standard_height)
+            for i in range(self.standard_height):
+                output[i] += char_template[i] + " "
+        return "\n".join(f"print('{line}')" for line in output)
 
     def generate_expression(self, expr_node):
+        """Generates Python code for an expression."""
         if expr_node.type == 'Identifier':
-            return self.templates.get(expr_node.value, ["[Unknown Image]"])
+            return f'templates.get("{expr_node.value}", ["[Unknown Image]"])'
         elif expr_node.type == 'Expression':
             op = expr_node.value
-            left = expr_node.children[0]
-            right = expr_node.children[1]
-            left_img = self.generate_expression(left)
-            right_img = self.generate_expression(right)
-            if op == '+':
-                return self.combine_side_by_side(left_img, right_img)
+            left = self.generate_expression(expr_node.children[0])
+            if op == '*':
+                # Set right to the number following Number( in the AST
+                right = expr_node.children[1].value  # Extract the number directly
+                return f'repeat_horizontal({left}, {right})'
             elif op == '/':
-                return self.combine_top_bottom(left_img, right_img)
-            elif op == '*':
-                # Implement repetition if needed
-                return left_img
-        else:
-            return ["[Invalid Expression]"]
-
-    def combine_side_by_side(self, left_img, right_img):
-        max_height = max(len(left_img), len(right_img))
-        left_img = left_img + [""] * (max_height - len(left_img))
-        right_img = right_img + [""] * (max_height - len(right_img))
-        combined = [l + r for l, r in zip(left_img, right_img)]
-        return combined
-
-    def combine_top_bottom(self, top_img, bottom_img):
-        return top_img + bottom_img
+                right = self.generate_expression(expr_node.children[1])
+                return f'combine_top_bottom({left}, {right})'
+            else:
+                return '"[INVALID OPERATOR]"'
+        return '"[INVALID EXPRESSION]"'
