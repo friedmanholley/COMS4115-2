@@ -62,83 +62,84 @@ Number          -> [0-9]+
 
 ### Sample Input 1
 ```plaintext
-draw(sun + dog);
+grid(3,2,draw(cat), draw(cat), draw(dog), draw(cat), draw(dog), draw(house));
 
-DRAW_STATEMENT
-├── EXPRESSION (+)
-│   ├── IDENTIFIER (sun)
-│   └── IDENTIFIER (dog)
+     /\_/\            /\_/\         ^..^      /    
+    ( o.o )          ( o.o )         /_/\_____/    
+     > ^ <            > ^ <            /\   /\     
+                                                   
+                                                   
+                                                   
+     /\_/\         ^..^      /           /\        
+    ( o.o )         /_/\_____/          /  \       
+     > ^ <            /\   /\          /____\      
+                                      |      |     
+                                      |______|    
 
-This would generate an image with side-by-side pictures of sun (left) and dog (right). 
 ```
 #### Sample Input 2
 ```plaintext
-write(cat) * 3;
+draw(cat/tree);
 
-EXPRESSION (*)
-├── WRITE_STATEMENT
-|    └── IDENTIFIER (cat)
-└── NUMBER (3)
-
-
-This would generate 3 word illustrations of the word cat.
+     /\_/\     
+    ( o.o )    
+     > ^ <     
+               
+               
+               
+       *       
+      ***      
+     *****     
+       |       
+       |       
 ```
 
-#### Sample Input 3
+### Sample Input 3
 ```plaintext
-grid(2, 2, draw(cat), draw(dog), write(cat), write(dog));
+write(hello);
 
-GRID_STATEMENT
-├── NUMBER (2)
-├── NUMBER (2)
-├── GRID_CONTENT
-│   ├── DRAW_STATEMENT
-│   │   ├── IDENTIFIER (cat)
-│   ├── DRAW_STATEMENT
-│   │   ├── IDENTIFIER (dog)
-│   ├── WRITE_STATEMENT
-│   │   ├── IDENTIFIER (cat)
-│   └── WRITE_STATEMENT
-│       ├── IDENTIFIER (dog)
+     ╭╮ ╭╮           ╭━━━╮           ╭╮              ╭╮              ╭━━━╮      
+     ┃┃ ┃┃           ┃╭━━╯           ┃┃              ┃┃              ┃╭━╮┃      
+     ┃╰━╯┃           ┃╰━━╮           ┃┃              ┃┃              ┃┃ ┃┃      
+     ┃╭━╮┃           ┃╭━━╯           ┃┃ ╭╮           ┃┃ ╭╮           ┃┃ ┃┃      
+     ┃┃ ┃┃           ┃╰━━╮           ┃╰━╯┃           ┃╰━╯┃           ┃╰━╯┃      
+     ╰╯ ╰╯           ╰━━━╯           ╰━━━╯           ╰━━━╯           ╰━━━╯  
 
-This would generate a 2x2 grid with images of cat and dog on the first row, and word illustration of cat and dog on the second.
 ```
 
-#### Sample Input 4
+### Sample Input 4
 ```plaintext
-write(cat) * 3 + draw(dog);
+write(world);
 
-EXPRESSION (+)
-├── EXPRESSION (*)
-|    ├── WRITE_STATEMENT
-|    |    └── IDENTIFIER (cat)
-|    └── NUMBER (3)
-└── DRAW_STATEMENT (dog)
-
-This would generate 3 word illustration of the text cat, followed by one image of a dog.
+     ╭╮╭╮╭╮          ╭━━━╮           ╭━━━╮           ╭╮              ╭━━━╮      
+     ┃┃┃┃┃┃          ┃╭━╮┃           ┃╭━╮┃           ┃┃              ╰╮╭╮┃      
+     ┃┃┃┃┃┃          ┃┃ ┃┃           ┃╰━╯┃           ┃┃               ┃┃┃┃      
+     ┃╰╯╰╯┃          ┃┃ ┃┃           ┃╭╮╭╯           ┃┃ ╭╮            ┃┃┃┃      
+     ╰╮╭╮╭╯          ┃╰━╯┃           ┃┃┃╰╮           ┃╰━╯┃           ╭╯╰╯┃      
+      ╰╯╰╯           ╰━━━╯           ╰╯╰━╯           ╰━━━╯           ╰━━━╯  
 ```
 
 ### Sample Input 5
 ```plaintext
-write(sun) / draw(dog);
+draw(house + bird);
 
-EXPRESSION (/)
-├── WRITE_STATEMENT
-│   └── IDENTIFIER (sun)
-├── DRAW_STATEMENT
-│   └── IDENTIFIER (dog)
-
+       /\            /\_/\     
+      /  \         (  • •  )   
+     /____\          =_Y_=     
+    |      |          `-`      
+    |______|                   
+                               
 
 This would generate word illustration of sun over top of an image of a dog.
 ```
 
 ### Error Input 1
 ```plaintext
-draw();
+draw(horse);
 
-SyntaxError: Unexpected token ('SpecialSymbol', ')')
+We have set this up unknown identifiers passed to draw to still generate code, as shown below.
 
-Error due to specialtoken ')' being present where Identifier was expected.
+[Unknown Image]
 ```
 
 ### Error Input 2
