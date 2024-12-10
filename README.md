@@ -77,7 +77,7 @@ grid(3,2,draw(cat), draw(cat), draw(dog), draw(cat), draw(dog), draw(house));
                                       |______|    
 
 ```
-#### Sample Input 2
+### Sample Input 2
 ```plaintext
 draw(cat/tree);
 
