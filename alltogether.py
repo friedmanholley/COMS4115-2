@@ -30,3 +30,6 @@ if __name__ == "__main__":
     # Print the ASCII art output
     print(output)
 
+    # Write intermediate code
+    with open("intermediate_code.py", "w") as file:
+        file.write(output)
