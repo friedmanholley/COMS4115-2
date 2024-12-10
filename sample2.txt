@@ -1,5 +1,0 @@
-draw(sun+dog);
-write(cat) * 3;
-grid(2,2,draw(cat),draw(dog),write(cat),write(dog));
-write(cat) * 3 + draw(dog);
-write(sun) / draw(dog);
