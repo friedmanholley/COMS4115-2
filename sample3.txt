@@ -1,0 +1,5 @@
+grid(3,2,draw(cat), draw(cat), draw(dog), draw(cat), draw(dog), draw(house));
+draw(cat/tree);
+write(hello);
+write(world);
+draw(house + bird);
