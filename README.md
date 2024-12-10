@@ -83,9 +83,7 @@ draw(cat/tree);
 
      /\_/\     
     ( o.o )    
-     > ^ <     
-               
-               
+     > ^ <            
                
        *       
       ***      
@@ -129,8 +127,6 @@ draw(house + bird);
     |      |          `-`      
     |______|                   
                                
-
-This would generate word illustration of sun over top of an image of a dog.
 ```
 
 ### Error Input 1
